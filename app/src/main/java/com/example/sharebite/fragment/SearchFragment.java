@@ -29,12 +29,12 @@ public class SearchFragment extends Fragment {
     // Original data lists for the menu
     private List<String> originalMenuFoodName = new ArrayList<>();
     private List<String> originalMenuItemPrice = new ArrayList<>();
-    private List<Integer> originalMenuImage = new ArrayList<>();
+    private List<String> originalMenuImage = new ArrayList<>(); // Update to List<String> for URLs
 
     // Filtered data lists for search functionality
     private List<String> filteredMenuFoodName = new ArrayList<>();
     private List<String> filteredMenuItemPrice = new ArrayList<>();
-    private List<Integer> filteredMenuImage = new ArrayList<>();
+    private List<String> filteredMenuImage = new ArrayList<>(); // Update to List<String> for URLs
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,8 @@ public class SearchFragment extends Fragment {
                     if (foodItem != null) {
                         originalMenuFoodName.add(foodItem.getName());
                         originalMenuItemPrice.add(foodItem.getPrice());
-                        originalMenuImage.add(R.drawable.menu1);  // Use a placeholder image or use Glide/Picasso for image loading
+                        // Add the image URL to the list (make sure your Firestore has image URLs)
+                        originalMenuImage.add(foodItem.getImageUrl());  // Assuming Firestore has image URLs as String
                     }
                 }
 
@@ -131,7 +132,7 @@ public class SearchFragment extends Fragment {
             if (foodName.toLowerCase().contains(query != null ? query.toLowerCase() : "")) {
                 filteredMenuFoodName.add(foodName);
                 filteredMenuItemPrice.add(originalMenuItemPrice.get(i));
-                filteredMenuImage.add(originalMenuImage.get(i));
+                filteredMenuImage.add(originalMenuImage.get(i)); // Make sure you're adding URL (String) here
             }
         }
 

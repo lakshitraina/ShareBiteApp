@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-
+import com.bumptech.glide.Glide;
+import com.example.sharebite.R;
 import com.example.sharebite.activity.DetailsActivity;
 import com.example.sharebite.databinding.MenuItemBinding;
 
@@ -17,13 +18,13 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
     private List<String> menuItemsName;
     private List<String> menuItemPrice;
-    private List<Integer> menuImage;
+    private List<String> menuFoodImages; // Changed to List<String> to hold URLs
     private Context context;
 
-    public MenuAdapter(List<String> menuItemsName, List<String> menuItemPrice, List<Integer> menuImage, Context context) {
+    public MenuAdapter(List<String> menuItemsName, List<String> menuItemPrice, List<String> menuFoodImages, Context context) {
         this.menuItemsName = menuItemsName;
         this.menuItemPrice = menuItemPrice;
-        this.menuImage = menuImage;
+        this.menuFoodImages = menuFoodImages; // Accepting List<String> for image URLs
         this.context = context;
     }
 
@@ -57,7 +58,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
                     // Set on click listener to open details
                     Intent intent = new Intent(context, DetailsActivity.class);
                     intent.putExtra("MenuItemName", menuItemsName.get(position));
-                    intent.putExtra("MenuItemImage", menuImage.get(position));
+                    intent.putExtra("MenuItemImage", menuFoodImages.get(position)); // Passing the URL instead of resource ID
                     context.startActivity(intent);
                 }
             });
@@ -66,7 +67,12 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         public void bind(int position) {
             binding.menufoodName.setText(menuItemsName.get(position));
             binding.menuPrice.setText(menuItemPrice.get(position));
-            binding.menuImage.setImageResource(menuImage.get(position));
+
+            // Use Glide to load the image from URL
+            Glide.with(binding.menuImage.getContext())
+                    .load(menuFoodImages.get(position)) // Load image URL
+                    .placeholder(R.drawable.logo)  // Set a placeholder in case the image fails to load
+                    .into(binding.menuImage); // ImageView for displaying the image
         }
     }
 }

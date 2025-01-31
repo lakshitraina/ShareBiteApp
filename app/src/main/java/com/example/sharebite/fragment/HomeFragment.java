@@ -15,7 +15,6 @@ import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.sharebite.R;
 import com.example.sharebite.adapter.PopularAdapter;
 import com.example.sharebite.databinding.FragmentHomeBinding;
-
 import com.example.sharebite.model.FoodItem;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,7 +27,7 @@ public class HomeFragment extends Fragment {
     private FirebaseFirestore db;
     private List<String> foodName = new ArrayList<>();
     private List<String> price = new ArrayList<>();
-    private List<String> popularFoodImages = new ArrayList<>();  // Change to List<String> for image URLs
+    private List<String> popularFoodImages = new ArrayList<>();  // List<String> for image URLs
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,19 +88,25 @@ public class HomeFragment extends Fragment {
         // Fetch the data
         foodCollection.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                // Clear previous data before adding new data
+                foodName.clear();
+                price.clear();
+                popularFoodImages.clear();
+
                 for (var document : task.getResult()) {
                     // Get the data from each document
                     FoodItem foodItem = document.toObject(FoodItem.class);
                     if (foodItem != null) {
-                        // Populate your lists with data
-                        foodName.add(foodItem.getName());
-                        price.add(foodItem.getPrice());
+                        String itemName = foodItem.getName();
+                        String itemPrice = foodItem.getPrice();
+                        String itemImageUrl = foodItem.getImageUrl();
 
-                        // Get the image URL from the Firestore document
-                        String imageUrl = foodItem.getImageUrl();  // Assuming Firestore has the 'imageUrl' field
-
-                        // Add the image URL to the list of images
-                        popularFoodImages.add(imageUrl);  // Add the image URL (String) to the list
+                        // Check for duplicate item (optional - can also use Set)
+                        if (!foodName.contains(itemName)) {
+                            foodName.add(itemName);
+                            price.add(itemPrice);
+                            popularFoodImages.add(itemImageUrl != null ? itemImageUrl : "placeholder_url");
+                        }
                     }
                 }
 
